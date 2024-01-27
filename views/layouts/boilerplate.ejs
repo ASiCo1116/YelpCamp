@@ -26,6 +26,25 @@
       integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
       crossorigin="anonymous"
     ></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" 
+            crossorigin="anonymous"
+    ></script>
+    <script>
+      $(".form-control").on("change", function () {
+        const files = Array.from(this.files);
+        updatedFiles = files.map(f => { return f.name });
+        for (let i = 0; i < updatedFiles.length; i++) {
+          if (updatedFiles[i].length > 15){
+            updatedFiles[i] = updatedFiles[i].slice(0, 9).concat(`...${updatedFiles[i].slice(-6)}`);
+          }
+        }
+        const fileName = updatedFiles.join(", ");
+        if (files.length > 1) {
+          return $(this).siblings(".form-label").addClass("selected").html(fileName);
+        }
+      })
+    </script>
     <script src="/javascripts/validateForms.js"></script>
   </body>
 </html>
