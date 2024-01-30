@@ -1,7 +1,7 @@
 <% layout("layouts/boilerplate") %>
 <class class="row">
   <h1 class="text-center">Edit campground</h1>
-  <div class="col-6 offset-3">
+  <div class="col-md-6 offset-md-3">
     <form
       action="/campgrounds/<%=campground._id%>?_method=PUT"
       method="POST"
@@ -58,9 +58,7 @@
           id="description"
           name="campground[description]"
           required
-        >
-<%= campground.description %></textarea
-        >
+        ><%= campground.description %></textarea>
         <div class="valid-feedback">Looks good!</div>
       </div>
       <div class="mb-3">
