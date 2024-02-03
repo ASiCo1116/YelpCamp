@@ -15,6 +15,7 @@ const User = require("./models/user");
 const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
 const MongoStore = require("connect-mongo");
+const GoogleStrategy = require("passport-google-oauth20");
 
 const campgroundRoutes = require("./routes/campgrounds");
 const reviewRoutes = require("./routes/reviews");
@@ -126,6 +127,22 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "/auth/google/callback",
+      scope: ["email", "profile"],
+    },
+    (accessToken, refreshToken, profile, cb) => {
+      console.log(accessToken);
+      console.log(refreshToken);
+      console.log(profile);
+    }
+  )
+);
+
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   res.locals.success = req.flash("success");
@@ -136,6 +153,15 @@ app.use((req, res, next) => {
 app.use("/", userRoutes);
 app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/reviews", reviewRoutes);
+
+app.get("/auth/google", passport.authenticate("google"));
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    successRedirect: "/campgrounds",
+    failureRedirect: "/login",
+  })
+);
 
 app.get("/", (req, res) => {
   res.render("home");
